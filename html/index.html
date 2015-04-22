@@ -1,0 +1,55 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!-- This Source Code Form is subject to the terms of the Mozilla Public
+   - License, v. 2.0. If a copy of the MPL was not distributed with this
+   - file, You can obtain one at http://mozilla.org/MPL/2.0/. -->
+<HTML>
+<HEAD>
+	<link type="text/css" rel="stylesheet" href="css/plain.css">
+	<link type="text/css" rel="stylesheet" href="lib/jquery-linedtextarea/jquery-linedtextarea.css">
+	<script type="text/javascript" src="lib/jquery.js"></script>
+	<script type="text/javascript" src="lib/jquery-linedtextarea/jquery-linedtextarea.js"></script>
+	<script type="text/javascript" src="lib/jsonlint/jsl.parser.js"></script>
+	<script type="text/javascript" src="lib/jsonlint/jsl.format.js"></script>
+
+	<script type="text/javascript" src="modevlib/imports/import.js"></script>
+	<title>JSON Formatter</title>
+</HEAD>
+<BODY>
+	<div style="text-align: center;">
+		<div id="no_generators" class="warning">This message will be removed if you have FF27+, or Chrome (with experimental Javascript enabled)</div>
+		<h3>JSON Formatter</h3>
+		<div id="notes" class="code" style="text-align: left;left:0;"></div>
+		<div><textarea name="cube" id="cube" style="width:800px;height:500px;"></textarea></div>
+		<div id="style_me" class="button">Format!</div>
+	</div>
+	<div class="footer"><a href="https://github.com/klahnakoski/JSON-Formatter">https://github.com/klahnakoski/JSON-Formatter</a></div>
+</BODY>
+
+<script>
+
+importScript(["modevlib/util/convert.js"], function(){
+	$().ready(function(){
+		$("#no_generators").hide();
+
+		//STYLE AS LINED TEXT AREAQ
+		$("#cube").linedtextarea();
+
+		$("#style_me").click(function(){
+			$("#notes").hide();
+			var area = $("#cube");
+			var code = area.val();
+
+			try {
+				code = jsl.format.formatJson(code);
+				var query = jsl.parser.parse(code);
+				area.val(convert.value2json(convert.json2value(code))).focus();
+			}catch (e){
+				$("#notes").show().html(convert.String2HTML(e.toString()));
+				area.val(code).focus();
+			}//try
+		});
+	});
+});
+
+</script>
+</HTML>
